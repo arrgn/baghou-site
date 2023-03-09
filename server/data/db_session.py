@@ -22,7 +22,9 @@ def global_init():
     __factory = orm.sessionmaker(bind=engine)
 
     # noinspection PyUnresolvedReferences
-    from . import __all_models
+    import __all_models
+    # why not
+    # from __all_models import *
 
     SqlAlchemyBase.metadata.create_all(engine)
 
