@@ -1,12 +1,13 @@
 import sqlalchemy
-from server.data.db_session import SqlAlchemyBase
-from sqlalchemy import orm
+from typing import Optional
+from sqlalchemy.orm import mapped_column, Mapped
+from server.data.db_session import Base
 
 
-class Chat(SqlAlchemyBase):
+class Chat(Base):
     __tablename__ = "chats"
 
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    name = sqlalchemy.Column(sqlalchemy.String, index=True)
-    about = sqlalchemy.Column(sqlalchemy.String)
-    avatar = sqlalchemy.Column(sqlalchemy.BINARY, nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(index=True)
+    about: Mapped[str]
+    avatar: Optional[Mapped[bytes]]

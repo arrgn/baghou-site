@@ -1,10 +1,14 @@
+import sqlalchemy
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
 from os import environ
-import sqlalchemy.ext.declarative as dec
+from sqlalchemy.orm import DeclarativeBase
 
-SqlAlchemyBase = dec.declarative_base()
+
+class Base(DeclarativeBase):
+    pass
+
 
 __factory = None
 
@@ -22,11 +26,9 @@ def global_init():
     __factory = orm.sessionmaker(bind=engine)
 
     # noinspection PyUnresolvedReferences
-    import __all_models
-    # why not
-    # from __all_models import *
+    from . import __all_models
 
-    SqlAlchemyBase.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 
 
 def create_session() -> Session:

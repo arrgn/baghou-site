@@ -1,11 +1,10 @@
 import sqlalchemy
+from sqlalchemy.orm import mapped_column, Mapped
+from server.data.db_session import Base
 
-from sqlalchemy import orm
-from server.data.db_session import SqlAlchemyBase
 
-
-class Follower(SqlAlchemyBase):
+class Follower(Base):
     __tablename__ = "followers"
 
-    follower_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), primary_key=True)
-    followed_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), primary_key=True)
+    follower: Mapped[int] = mapped_column(sqlalchemy.ForeignKey("users.id"), primary_key=True)
+    followed: Mapped[int] = mapped_column(sqlalchemy.ForeignKey("users.id"), primary_key=True)

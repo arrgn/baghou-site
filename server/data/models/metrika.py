@@ -1,9 +1,10 @@
 import sqlalchemy
-from server.data.db_session import SqlAlchemyBase
+from sqlalchemy.orm import mapped_column, Mapped
+from server.data.db_session import Base
 
 
-class Metrika(SqlAlchemyBase):
+class Metrika(Base):
     __tablename__ = "metrika"
 
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    data = sqlalchemy.Column(sqlalchemy.JSON)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    data: Mapped[sqlalchemy.JSON]
