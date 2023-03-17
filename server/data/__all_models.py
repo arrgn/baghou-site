@@ -38,13 +38,6 @@ class Message(Base):
     message: Mapped[str255]
 
 
-class Metrika(Base):
-    __tablename__ = "metrika"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    data: Mapped[JSON]
-
-
 class User(Base):
     __tablename__ = "users"
 
@@ -64,3 +57,29 @@ class UserChat(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     chat_id: Mapped[int] = mapped_column(ForeignKey("chats.id"), primary_key=True)
     time: Mapped[datetime] = mapped_column(default=datetime.now())
+
+
+class Characters(Base):
+    __tablename__ = "characters"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str255]
+
+
+class CharactersStatistics(Base):
+    __tablename__ = "characters_statistic"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    character_id: Mapped[int] = mapped_column(ForeignKey("characters.id"))
+    statistics: Mapped[JSON]
+
+
+class GamesSessions(Base):
+    __tablename__ = "games_sessions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user1_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user2_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    statistics1_id: Mapped[int] = mapped_column(ForeignKey("characters_statistic.id"))
+    statistics2_id: Mapped[int] = mapped_column(ForeignKey("characters_statistic.id"))
+    general_data: Mapped[JSON]
