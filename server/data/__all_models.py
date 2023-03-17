@@ -3,14 +3,15 @@ from typing import Optional
 from sqlalchemy import ForeignKey, JSON
 from sqlalchemy.orm import mapped_column, Mapped
 from server.data.db_session import Base
+from data_types import str255
 
 
 class Chat(Base):
     __tablename__ = "chats"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(index=True)
-    about: Mapped[str]
+    name: Mapped[str255] = mapped_column(index=True)
+    about: Mapped[str255]
     avatar: Optional[Mapped[bytes]] = mapped_column(nullable=True)
 
 
@@ -34,7 +35,7 @@ class Message(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    message: Mapped[str]
+    message: Mapped[str255]
 
 
 class Metrika(Base):
@@ -48,10 +49,10 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(index=True)
-    about: Mapped[str]
-    email: Mapped[str] = mapped_column(unique=True)
-    password: Mapped[str]
+    name: Mapped[str255] = mapped_column(index=True)
+    about: Mapped[str255]
+    email: Mapped[str255] = mapped_column(unique=True)
+    password: Mapped[str255]
     isactivated: Mapped[bool] = mapped_column(default=False)
     useotp: Mapped[bool] = mapped_column(default=False)
     avatar: Optional[Mapped[bytes]] = mapped_column(nullable=True)

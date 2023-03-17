@@ -1,13 +1,15 @@
-import sqlalchemy
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
 from os import environ
 from sqlalchemy.orm import DeclarativeBase
+from data_types import str255
 
 
 class Base(DeclarativeBase):
-    pass
+    type_annotation_map = {
+        str255: sa.String(255),
+    }
 
 
 __factory = None
