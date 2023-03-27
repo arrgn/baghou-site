@@ -35,9 +35,6 @@ class Follower(Base):
     follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     followed_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
 
-    follower: Mapped["User"] = relationship(back_populates="followed_by")
-    followed: Mapped["User"] = relationship(back_populates="following")
-
 
 class Message(Base):
     __tablename__ = "messages"
@@ -64,8 +61,6 @@ class User(Base):
 
     messages: Mapped[List["Message"]] = relationship(back_populates="sender")
     chats: Mapped[List["UserChat"]] = relationship(back_populates="user")
-    followed_by: Mapped[List["Follower"]] = relationship(back_populates="follower")
-    following: Mapped[List["ForeignKey"]] = relationship(back_populates="followed")
 
 
 class UserChat(Base):
