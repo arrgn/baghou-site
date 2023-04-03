@@ -8,8 +8,42 @@ from bcrypt import hashpw, checkpw, gensalt
 from config import config
 from loggers import logger
 from server.funcs.path_module import path_to_file, create_dir
+from data.db_session import create_session, global_init
+from data.__all_models import User
 
 app = Flask(__name__)
+
+global_init()
+
+
+@app.post("/reg")
+def reg():
+    try:
+        username = request.json["username"]
+        # email = request.json["email"]
+        email = "123@tom.uk"
+        password = request.json["password"]
+        hashed_password = hashpw(password.encode("utf-8"), gensalt())
+
+        dao = create_session()
+
+        # here crashes
+        if dao.query(User).filter(User.email == email).first():
+            return {"status": 400, "msg": "Пользователь с такой почтой уже существует!"}
+
+        user = User(
+            name=username,
+            email=email,
+            password=hashed_password
+        )
+
+        dao.add(user)
+        dao.commit()
+        return {"status": 200, "msg": "Пользователь успешно создан!"}
+
+    except Exception as e:
+        print(e)
+        return {"status": 400, "msg": "Что-то пошло не так."}
 
 
 @app.post("/login")

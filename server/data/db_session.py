@@ -1,14 +1,17 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, DeclarativeBase
+from sqlalchemy.dialects.postgresql import BYTEA
 from os import environ
-from sqlalchemy.orm import DeclarativeBase
-from data_types import str255
+from server.data.data_types import str255, json
 
 
 class Base(DeclarativeBase):
+    __allow_unmapped__ = True
     type_annotation_map = {
         str255: sa.String(255),
+        bytes: BYTEA,
+        json: sa.JSON
     }
 
 

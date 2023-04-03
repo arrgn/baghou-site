@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import ForeignKey, JSON, Table, Column
+from sqlalchemy import ForeignKey, Table, Column, ForeignKeyConstraint
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from server.data.db_session import Base
-from data_types import str255
+from server.data.data_types import str255, json
 
 
 class Chat(Base):
@@ -12,7 +12,7 @@ class Chat(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str255] = mapped_column(index=True)
     about: Mapped[str255]
-    avatar: Optional[Mapped[bytes]] = mapped_column(nullable=True)
+    avatar: Mapped[Optional[bytes]]
 
     messages: Mapped[List["ChatMessage"]] = relationship(back_populates="chat")
     users: Mapped[List["UserChat"]] = relationship(back_populates="chat")
@@ -35,6 +35,16 @@ class Follower(Base):
     follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     followed_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
 
+    # follower: Mapped["User"] = relationship(foreign_keys=[follower_id])
+    # followed: Mapped["User"] = relationship(foreign_keys=[followed_id])
+
+    # __table_args__ = (
+    #     ForeignKeyConstraint(
+    #         [follower_id, followed_id],
+    #         ['users.id', 'users.id'],
+    #     ),
+    # )
+
 
 class Message(Base):
     __tablename__ = "messages"
@@ -52,15 +62,17 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str255] = mapped_column(index=True)
-    about: Mapped[str255]
+    about: Mapped[str255] = mapped_column(default="")
     email: Mapped[str255] = mapped_column(unique=True)
     password: Mapped[str255]
     isactivated: Mapped[bool] = mapped_column(default=False)
     useotp: Mapped[bool] = mapped_column(default=False)
-    avatar: Optional[Mapped[bytes]] = mapped_column(nullable=True)
+    avatar: Mapped[Optional[bytes]]
 
     messages: Mapped[List["Message"]] = relationship(back_populates="sender")
     chats: Mapped[List["UserChat"]] = relationship(back_populates="user")
+    # followers: Mapped["Follower"] = relationship(back_populates="followed")
+    # following: Mapped["Follower"] = relationship(back_populates="follower")
 
 
 class UserChat(Base):
@@ -88,7 +100,7 @@ class CharactersStatistics(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     character_id: Mapped[int] = mapped_column(ForeignKey("characters.id"))
-    statistics: Mapped[JSON]
+    statistics: Mapped[json]
 
     character: Mapped["Characters"] = relationship(back_populates="statistics")
     session: Mapped["GamesSessions"] = relationship(back_populates="statistics1")
@@ -102,7 +114,7 @@ class GamesSessions(Base):
     user2_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     statistics1_id: Mapped[int] = mapped_column(ForeignKey("characters_statistic.id"))
     statistics2_id: Mapped[int] = mapped_column(ForeignKey("characters_statistic.id"))
-    general_data: Mapped[JSON]
+    general_data: Mapped[json]
 
     statistics: Mapped[List["CharactersStatistics"]] = relationship(back_populates="session")
 
@@ -115,10 +127,10 @@ user_game_association_table = Table(
     Column("gs_user2_id", ForeignKey("games_sessions.user2_id")),
 )
 
-followers_association_table = Table(
-    "followers_association_table",
-    Base.metadata,
-    Column("usr_id", ForeignKey("user.id")),
-    Column("fol_er_id", ForeignKey("followers.follower_id")),
-    Column("fol_ed_id", ForeignKey("followers.followed_id")),
-)
+# followers_association_table = Table(
+#     "followers_association_table",
+#     Base.metadata,
+#     Column("usr_id", ForeignKey("user.id")),
+#     Column("fol_er_id", ForeignKey("followers.follower_id")),
+#     Column("fol_ed_id", ForeignKey("followers.followed_id")),
+# )
