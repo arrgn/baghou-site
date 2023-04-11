@@ -1,6 +1,7 @@
 import sys
 import traceback
 import logging.config
+import re
 
 from flask import Flask, request
 from bcrypt import hashpw, checkpw, gensalt
@@ -20,10 +21,12 @@ global_init()
 def reg():
     try:
         username = request.json["username"]
-        # email = request.json["email"]
-        email = "123@tom.uk"
+        email = request.json["email"]
         password = request.json["password"]
         hashed_password = hashpw(password.encode("utf-8"), gensalt())
+
+        if not re.match("[^@]+@[^@]+\.[^@]+", email):
+            return {"status": 400, "msg": "Некорректный адрес электронной почты"}
 
         dao = create_session()
 
