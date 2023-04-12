@@ -3,7 +3,7 @@ import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session, DeclarativeBase
 from sqlalchemy.dialects.postgresql import BYTEA
 from os import environ
-from server.data.data_types import str255, json
+from server.data.data_types import str255, json, text
 
 
 class Base(DeclarativeBase):
@@ -11,7 +11,8 @@ class Base(DeclarativeBase):
     type_annotation_map = {
         str255: sa.String(255),
         bytes: BYTEA,
-        json: sa.JSON
+        json: sa.JSON,
+        text: sa.TEXT
     }
 
 

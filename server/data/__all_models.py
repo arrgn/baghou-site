@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import ForeignKey, Table, Column, ForeignKeyConstraint
+from sqlalchemy import ForeignKey, Table, Column
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from server.data.db_session import Base
-from server.data.data_types import str255, json
+from server.data.data_types import str255, json, text
 
 
 class Chat(Base):
@@ -61,6 +61,16 @@ class User(Base):
 
     messages: Mapped[List["Message"]] = relationship(back_populates="sender")
     chats: Mapped[List["UserChat"]] = relationship(back_populates="user")
+    tokens: Mapped[List["Token"]] = relationship(back_populates="user")
+
+
+class Token(Base):
+    __tablename__ = "tokens"
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    refresh_token: Mapped[text] = mapped_column(primary_key=True)
+
+    user: Mapped["User"] = relationship(back_populates="tokens")
 
 
 class UserChat(Base):
@@ -74,26 +84,26 @@ class UserChat(Base):
     chat: Mapped["Chat"] = relationship(back_populates="users")
 
 
-class Characters(Base):
+class Character(Base):
     __tablename__ = "characters"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str255]
 
-    statistics: Mapped[List["CharactersStatistics"]] = relationship(back_populates="character")
+    statistics: Mapped[List["CharacterStatistic"]] = relationship(back_populates="character")
 
 
-class CharactersStatistics(Base):
+class CharacterStatistic(Base):
     __tablename__ = "characters_statistic"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     character_id: Mapped[int] = mapped_column(ForeignKey("characters.id"))
     statistics: Mapped[json]
 
-    character: Mapped["Characters"] = relationship(back_populates="statistics")
+    character: Mapped["Character"] = relationship(back_populates="statistics")
 
 
-class GamesSessions(Base):
+class GameSession(Base):
     __tablename__ = "games_sessions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
