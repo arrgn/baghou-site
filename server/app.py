@@ -2,7 +2,8 @@ import logging.config
 import sys
 import traceback
 
-from server import app, config
+from server import app
+from server import config
 from server.funcs.path_module import path_to_file, create_dir
 from server.loggers import logger
 
