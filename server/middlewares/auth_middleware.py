@@ -2,10 +2,12 @@ from functools import wraps
 from os import environ
 
 import jwt
+from flask import make_response
 from flask import request
 
 from server.data.__all_models import User
 from server.data.db_session import create_session
+from server.loggers import logger
 
 
 def token_required(f):
@@ -18,7 +20,9 @@ def token_required(f):
 
         # return error if token wasn't found
         if not access_token:
-            return {"status": 401, "msg": "Пользователь не авторизован!"}
+            res = make_response({"msg": "Пользователь не авторизован!"})
+            res.status = 401
+            return res
         try:
             # get data from token
             data = jwt.decode(access_token, environ["SECRET_ACCESS_KEY"], algorithms=["HS256"])["data"]
@@ -29,14 +33,20 @@ def token_required(f):
             # get user by id; if not found - return an error
             user = dao.query(User).filter(User.id == data["id"]).first()
             if not user:
-                return {"status": 400, "msg": "Пользователь не найден!"}
+                res = make_response({"msg": "Пользователь не найден!"})
+                res.status = 400
+                return res
 
         # check if access token is alive
         except jwt.ExpiredSignatureError:
-            return {"status": 401, "msg": "Пользователь не авторизован!"}
+            res = make_response({"msg": "Пользователь не авторизован!"})
+            res.status = 401
+            return res
         except Exception as e:
-            print(e)
-            return {"status": 500, "msg": "Что-то пошло не так."}
+            logger.exception(e)
+            res = make_response({"msg": "Что-то пошло не так."})
+            res.status = 500
+            return res
 
         return f(user, *args, **kwargs)
 

@@ -4,16 +4,16 @@ from os import environ
 
 import jwt
 from bcrypt import hashpw, checkpw
-from flask import request
+from flask import request, make_response
 
-from server import app, salt
+from server import salt
 from server.data.__all_models import User, Token
 from server.data.db_session import create_session
+from server.loggers import logger
 
 
 class UserService:
     @staticmethod
-    @app.post("/auth/reg")
     def reg():
         try:
             username = request.json["username"]
@@ -41,14 +41,18 @@ class UserService:
 
             dao.add(user)
             dao.commit()
-            return {"status": 200, "msg": "Пользователь успешно создан!"}
+
+            res = make_response({"msg": "Пользователь успешно создан!"})
+            res.status = 200
+            return res
 
         except Exception as e:
-            print(e)
-            return {"status": 500, "msg": "Что-то пошло не так."}
+            logger.exception(e)
+            res = make_response({"msg": "Что-то пошло не так."})
+            res.status = 500
+            return res
 
     @staticmethod
-    @app.post("/auth/login")
     def login():
         try:
             email = request.json["email"]
@@ -60,11 +64,15 @@ class UserService:
             # check user exists
             user = dao.query(User).filter(User.email == email).first()
             if not user:
-                return {"status": 400, "msg": "Пользователь не найден!"}
+                res = make_response({"msg": "Пользователь не найден!"})
+                res.status = 400
+                return res
 
             # check password
             if not checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
-                return {"status": 400, "msg": "Неверный логин или пароль!"}
+                res = make_response({"msg": "Неверный логин или пароль!"})
+                res.status = 400
+                return res
 
             # generate tokens:
             # refresh exists fot 30 days; access - for 30 minutes
@@ -80,14 +88,19 @@ class UserService:
             dao.add(token)
             dao.commit()
 
-            return {"status": 200, "msg": "Вы успешно вошли в аккаунт!", **tokens}
+            res = make_response({"msg": "Вы успешно вошли в аккаунт!", **tokens})
+            res.set_cookie("refresh_token", tokens["refresh_token"], max_age=30 * 24 * 60 * 60, httponly=True)
+            res.status = 200
+
+            return res
 
         except Exception as e:
-            print(e)
-            return {"status": 500, "msg": "Что-то пошло не так."}
+            logger.exception(e)
+            res = make_response({"msg": "Что-то пошло не так."})
+            res.status = 500
+            return res
 
     @staticmethod
-    @app.get("/auth/refresh")
     def refresh_access_token():
         try:
             refresh_token = None
@@ -111,13 +124,21 @@ class UserService:
             dao.add(token_from_db)
             dao.commit()
 
-            return {"status": 200, "msg": "Доступ успешно получен", **tokens}
+            res = make_response({"msg": "Доступ успешно получен!", **tokens})
+            res.set_cookie("refresh_token", tokens["refresh_token"], max_age=30 * 24 * 60 * 60, httponly=True)
+            res.status = 200
+
+            return res
 
         except jwt.ExpiredSignatureError:
-            return {"status": 401, "msg": "Пользователь не авторизован!"}
+            res = make_response({"msg": "Пользователь не авторизован!"})
+            res.status = 401
+            return res
         except Exception as e:
-            print(e)
-            return {"status": 500, "msg": "Что-то пошло не так!"}
+            logger.exception(e)
+            res = make_response({"msg": "Что-то пошло не так."})
+            res.status = 500
+            return res
 
     @staticmethod
     def generate_tokens(payload):

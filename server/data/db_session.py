@@ -1,8 +1,10 @@
+from os import environ
+
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
-from sqlalchemy.orm import Session, DeclarativeBase
 from sqlalchemy.dialects.postgresql import BYTEA
-from os import environ
+from sqlalchemy.orm import Session, DeclarativeBase
+
 from server.data.data_types import str255, json, text
 
 
@@ -26,7 +28,6 @@ def global_init():
         return
 
     conn_str = environ["DATABASE_URL"]
-    print(f"Подключение к базе данных по адресу {conn_str}")
 
     engine = sa.create_engine(conn_str, echo=False)
     __factory = orm.sessionmaker(bind=engine)

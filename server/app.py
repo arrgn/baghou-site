@@ -6,6 +6,22 @@ from server import app
 from server import config
 from server.funcs.path_module import path_to_file, create_dir
 from server.loggers import logger
+from server.services.user_service import UserService
+
+
+@app.post("/auth/reg")
+def reg():
+    return UserService.reg()
+
+
+@app.post("/auth/login")
+def login():
+    return UserService.login()
+
+
+@app.get("/auth/refresh")
+def refresh():
+    return UserService.refresh_access_token()
 
 
 def log_handler(exctype, value, tb):
