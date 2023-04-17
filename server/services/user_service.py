@@ -75,7 +75,7 @@ class UserService:
         dao.add(token)
         dao.commit()
 
-        res = make_response({"msg": "Вы успешно вошли в аккаунт!", **tokens})
+        res = make_response({"msg": "Вы успешно вошли в аккаунт!", "access_token": tokens["access_token"]})
         res.set_cookie("refresh_token", tokens["refresh_token"], max_age=30 * 24 * 60 * 60, httponly=True)
         res.status = 200
 
@@ -104,7 +104,7 @@ class UserService:
         dao.add(token_from_db)
         dao.commit()
 
-        res = make_response({"msg": "Доступ успешно получен!", **tokens})
+        res = make_response({"msg": "Доступ успешно получен!", "access_token": tokens["access_token"]})
         res.set_cookie("refresh_token", tokens["refresh_token"], max_age=30 * 24 * 60 * 60, httponly=True)
         res.status = 200
 
