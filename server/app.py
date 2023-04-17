@@ -28,8 +28,18 @@ def refresh():
     return UserService.refresh_access_token()
 
 
+@app.get("/players/profile/<username>-<user_id>")
+def get_profile_data(username, user_id):
+    return UserService.get_profile_data(username, user_id)
+
+
+@app.get("/players/search")
+def get_users_by_name():
+    return UserService.get_users_by_name()
+
+
 @app.errorhandler(HTTPException)
-def a(e):
+def http_error_handler(e):
     res = make_response(e.description)
     res.status = e.code
     return res

@@ -24,10 +24,10 @@ def token_required(f):
         data = jwt.decode(access_token, environ["SECRET_ACCESS_KEY"], algorithms=["HS256"])["data"]
 
         # data access object
-        dao = create_session()
+        with create_session() as dao:
+            # get user by id; if not found - return an error
+            user = dao.query(User).filter(User.id == data["id"]).first()
 
-        # get user by id; if not found - return an error
-        user = dao.query(User).filter(User.id == data["id"]).first()
         if not user:
             abort(400, {"msg": "Пользователь не найден!"})
 
