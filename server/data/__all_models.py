@@ -1,9 +1,11 @@
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import ForeignKey, Table, Column
+
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
+
+from server.data.data_types import str255, text, json
 from server.data.db_session import Base
-from server.data.data_types import str255, json, text
 
 
 class Chat(Base):
@@ -112,28 +114,3 @@ class GameSession(Base):
     statistics1_id: Mapped[int] = mapped_column(ForeignKey("characters_statistic.id"))
     statistics2_id: Mapped[int] = mapped_column(ForeignKey("characters_statistic.id"))
     general_data: Mapped[json]
-
-
-user_game_association_table = Table(
-    "user_game_association_table",
-    Base.metadata,
-    Column("usr_id", ForeignKey("user.id")),
-    Column("gs_user1_id", ForeignKey("games_sessions.user1_id")),
-    Column("gs_user2_id", ForeignKey("games_sessions.user2_id")),
-)
-
-followers_association_table = Table(
-    "followers_association_table",
-    Base.metadata,
-    Column("usr_id", ForeignKey("user.id")),
-    Column("fol_er_id", ForeignKey("followers.follower_id")),
-    Column("fol_ed_id", ForeignKey("followers.followed_id")),
-)
-
-sessions_association_table = Table(
-    "sessions_association_table",
-    Base.metadata,
-    Column("chr_stat_id", ForeignKey("characters_statistic.id")),
-    Column("stat1_id", ForeignKey("games_sessions.statistics1_id")),
-    Column("stat2_id", ForeignKey("games_sessions.statistics2_id")),
-)

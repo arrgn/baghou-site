@@ -33,7 +33,7 @@ def global_init():
     __factory = orm.sessionmaker(bind=engine)
 
     # noinspection PyUnresolvedReferences
-    from . import __all_models
+    from server.data import __all_models
 
     Base.metadata.create_all(engine)
 
