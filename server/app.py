@@ -10,6 +10,7 @@ from server import app
 from server import config
 from server.funcs.path_module import path_to_file, create_dir
 from server.loggers import logger
+from server.middlewares.auth_middleware import token_required
 from server.services.user_service import UserService
 
 
@@ -33,9 +34,20 @@ def get_profile_data(username, user_id):
     return UserService.get_profile_data(username, user_id)
 
 
+@app.get("/players/profile/<username>-<user_id>/followers")
+def get_followers(username, user_id):
+    return UserService.get_followers(username, user_id)
+
+
 @app.get("/players/search")
 def get_users_by_name():
     return UserService.get_users_by_name()
+
+
+@app.post("/players/follow")
+@token_required
+def follow_user(user):
+    return UserService.follow(user)
 
 
 @app.errorhandler(HTTPException)

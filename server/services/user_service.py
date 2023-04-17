@@ -7,7 +7,7 @@ from bcrypt import hashpw, checkpw
 from flask import request, make_response, abort
 
 from server import salt
-from server.data.__all_models import User, Token
+from server.data.__all_models import User, Token, Follower
 from server.data.db_session import create_session
 
 
@@ -116,7 +116,7 @@ class UserService:
             # get user from db
             user = dao.query(User).filter(User.name == username, User.id == int(user_id)).first()
         if not user:
-            abort(400, {"msg": "Пользователь не найден"})
+            abort(400, {"msg": "Пользователь не найден!"})
 
         res = make_response({
             "gtag": f"{user.name}#{user.id}",
@@ -137,6 +137,44 @@ class UserService:
             "gtag": f"{user.name}#{user.id}",
             "avatar": user.avatar
         }, users)))
+
+        return res
+
+    @staticmethod
+    def follow(user):
+        target_unparsed = request.args["target"].split("-")
+        target_name = target_unparsed[0]
+        target_id = int(target_unparsed[1])
+
+        with create_session() as dao:
+            target = dao.query(User).filter(User.name == target_name, User.id == target_id).first()
+
+            if not target:
+                abort(400, {"msg": "Пользователь не найден!"})
+
+            following_row = Follower(follower_id=user.id, followed_id=target.id)
+            dao.add(following_row)
+            dao.commit()
+
+            res = make_response({"msg": f"Вы успешно подписались на пользователя {target.name}#{target.id}!"})
+
+        return res
+
+    @staticmethod
+    def get_followers(username, user_id):
+        with create_session() as dao:
+            user = dao.query(User).filter(User.name == username, User.id == user_id).first()
+
+            if not user:
+                abort(400, {"msg": "Пользователь не найден!"})
+
+            followers = dao.query(User).join(Follower, Follower.follower_id == User.id).filter(
+                Follower.followed_id == user.id).all()
+
+            res = make_response(list(map(lambda follower: {
+                "gtag": f"{follower.name}#{follower.id}",
+                "avatar": follower.avatar
+            }, followers)))
 
         return res
 
