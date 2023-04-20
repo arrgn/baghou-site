@@ -55,6 +55,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str255] = mapped_column(index=True)
     bio: Mapped[str255] = mapped_column(default="")
+    rating: Mapped[int] = mapped_column(default=0)
     email: Mapped[str255] = mapped_column(unique=True)
     password: Mapped[str255]
     isactivated: Mapped[bool] = mapped_column(default=False)
