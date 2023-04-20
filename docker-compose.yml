@@ -1,0 +1,65 @@
+version: '3.4'
+
+x-db-variables: &db-variables
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+
+x-api-variables: &api-variables
+  SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
+  SECRET_REFRESH_KEY: ${SECRET_REFRESH_KEY}
+  DB_USER: ${DB_USER}
+  DB_PASSWORD: ${DB_PASSWORD}
+  DB_HOST: postgresql_db
+  DB_PORT: 5432
+  DATABASE: ${POSTGRES_DB}
+
+
+services:
+  postgresql_db:
+    image: postgres
+    restart: always
+    volumes:
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+    ports:
+      - "5432:5432"
+    environment:
+      <<: *db-variables
+
+  nginx:
+    depends_on:
+      - api
+#      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "443:443"
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: "./server"
+    depends_on:
+      - postgresql_db
+    environment:
+      <<: *api-variables
+      FLASK_ENV: production
+
+#  client:
+#    stdin_open: true
+#    build:
+#      dockerfile: Dockerfile.prod
+#      context: "./client"
+#    environment:
+#      FLASK_ENV: production
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "8000:8080"
+    depends_on:
+      - postgresql_db
+    environment:
+      ADMINER_DEFAULT_SERVER: postgresql_db

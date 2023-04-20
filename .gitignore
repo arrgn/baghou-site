@@ -132,3 +132,5 @@ dmypy.json
 .idea/
 .vs/
 .vscode/
+
+init.sql
