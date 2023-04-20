@@ -14,11 +14,6 @@ from bg_api.middlewares.auth_middleware import token_required
 from bg_api.services.user_service import UserService
 
 
-@app.route("/")
-def home():
-    return {"fuck you": False}
-
-
 @app.post("/auth/reg")
 def reg():
     return UserService.reg()

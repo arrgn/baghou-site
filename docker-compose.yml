@@ -28,7 +28,7 @@ services:
   nginx:
     depends_on:
       - api
-#      - client
+      - client
     restart: always
     build:
       dockerfile: Dockerfile
@@ -47,13 +47,13 @@ services:
     ports:
       - "5000:5000"
 
-#  client:
-#    stdin_open: true
-#    build:
-#      dockerfile: Dockerfile.prod
-#      context: "./client"
-#    environment:
-#      FLASK_ENV: production
+  client:
+    stdin_open: true
+    build:
+      dockerfile: Dockerfile.prod
+      context: "./client"
+    depends_on:
+      - api
 
   adminer:
     image: adminer
