@@ -1,4 +1,4 @@
-from os import environ
+from os import environ as env
 
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
@@ -27,7 +27,7 @@ def global_init():
     if __factory:
         return
 
-    conn_str = environ["DATABASE_URL"]
+    conn_str = f"postgresql://{env['DB_USER']}:{env['DB_PASSWORD']}@{env['DB_HOST']}:{env['DB_PORT']}/{env['DATABASE']}"
 
     engine = sa.create_engine(conn_str, echo=False)
     __factory = orm.sessionmaker(bind=engine)
