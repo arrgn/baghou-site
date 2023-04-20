@@ -5,8 +5,8 @@ import jwt
 from flask import abort
 from flask import request
 
-from server.data.__all_models import User
-from server.data.db_session import create_session
+from bg_api.data.__all_models import User
+from bg_api.data.db_session import create_session
 
 
 def token_required(f):

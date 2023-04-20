@@ -6,12 +6,17 @@ from flask import make_response
 from jwt import ExpiredSignatureError
 from werkzeug.exceptions import HTTPException
 
-from server import app
-from server import config
-from server.funcs.path_module import path_to_file, create_dir
-from server.loggers import logger
-from server.middlewares.auth_middleware import token_required
-from server.services.user_service import UserService
+from bg_api import app
+from bg_api import config
+from bg_api.funcs.path_module import path_to_file, create_dir
+from bg_api.loggers import logger
+from bg_api.middlewares.auth_middleware import token_required
+from bg_api.services.user_service import UserService
+
+
+@app.route("/")
+def home():
+    return {"fuck you": False}
 
 
 @app.post("/auth/reg")

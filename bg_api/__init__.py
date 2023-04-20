@@ -4,8 +4,8 @@ from bcrypt import gensalt
 from dotenv import load_dotenv
 from flask import Flask
 
-from server.data.db_session import global_init
-from server.funcs.path_module import path_to_file
+from bg_api.data.db_session import global_init
+from bg_api.funcs.path_module import path_to_file
 
 # load configuration and .env
 load_dotenv()

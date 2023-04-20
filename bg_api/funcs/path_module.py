@@ -1,7 +1,7 @@
 from os import path, makedirs
 from os.path import isdir
 
-from server.loggers import logger
+from bg_api.loggers import logger
 
 
 def path_to_file(*elements) -> str:

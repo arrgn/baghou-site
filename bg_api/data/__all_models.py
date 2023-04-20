@@ -4,8 +4,8 @@ from typing import Optional, List
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from server.data.data_types import str255, text, json
-from server.data.db_session import Base
+from bg_api.data.data_types import str255, text, json
+from bg_api.data.db_session import Base
 
 
 class Chat(Base):

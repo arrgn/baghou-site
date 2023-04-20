@@ -34,17 +34,18 @@ services:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - "443:443"
+      - "80:80"
 
   api:
     build:
       dockerfile: Dockerfile
-      context: "./server"
+      context: "bg_api"
     depends_on:
       - postgresql_db
     environment:
       <<: *api-variables
-      FLASK_ENV: production
+    ports:
+      - "5000:5000"
 
 #  client:
 #    stdin_open: true

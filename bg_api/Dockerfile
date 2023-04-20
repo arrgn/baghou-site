@@ -1,8 +1,9 @@
 FROM python
-WORKDIR /app
+WORKDIR /bg_api
 COPY requirements.txt ./requirements.txt
 COPY ./ ./
 RUN pip install --no-cache-dir -r ./requirements.txt
 ENV FLASK_APP app.py
 ENV FLASK_DEBUG 0
-CMD ["python", "-m", "flask", "run"]
+ENTRYPOINT ["flask"]
+CMD ["run", "--host", "0.0.0.0"]

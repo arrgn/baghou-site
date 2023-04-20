@@ -5,7 +5,7 @@ import sqlalchemy.orm as orm
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.orm import Session, DeclarativeBase
 
-from server.data.data_types import str255, json, text
+from bg_api.data.data_types import str255, json, text
 
 
 class Base(DeclarativeBase):
@@ -33,7 +33,7 @@ def global_init():
     __factory = orm.sessionmaker(bind=engine)
 
     # noinspection PyUnresolvedReferences
-    from server.data import __all_models
+    from bg_api.data import __all_models
 
     Base.metadata.create_all(engine)
 

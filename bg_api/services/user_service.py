@@ -6,9 +6,9 @@ import jwt
 from bcrypt import hashpw, checkpw
 from flask import request, make_response, abort
 
-from server import salt
-from server.data.__all_models import User, Token, Follower
-from server.data.db_session import create_session
+from bg_api import salt
+from bg_api.data.__all_models import User, Token, Follower
+from bg_api.data.db_session import create_session
 
 
 class UserService:
