@@ -1,6 +1,7 @@
 import re
 from datetime import datetime, timezone, timedelta
 from os import environ
+from typing import Any
 
 import jwt
 from bcrypt import hashpw, checkpw
@@ -111,12 +112,8 @@ class UserService:
         return res
 
     @staticmethod
-    def get_profile_data(username, user_id):
-        with create_session() as dao:
-            # get user from db
-            user = dao.query(User).filter(User.name == username, User.id == int(user_id)).first()
-        if not user:
-            abort(400, {"msg": "Пользователь не найден!"})
+    def get_profile_data(gtag: str):
+        user = UserService.get_user(gtag)
 
         res = make_response({
             "gtag": f"{user.name}#{user.id}",
@@ -141,32 +138,23 @@ class UserService:
         return res
 
     @staticmethod
-    def follow(user):
-        target_unparsed = request.args["target"].split("-")
-        target_name = target_unparsed[0]
-        target_id = int(target_unparsed[1])
-
+    def follow(user: User):
+        gtag = request.json["gtag"]
         with create_session() as dao:
-            target = dao.query(User).filter(User.name == target_name, User.id == target_id).first()
-
-            if not target:
-                abort(400, {"msg": "Пользователь не найден!"})
+            target = UserService.get_user(gtag)
 
             following_row = Follower(follower_id=user.id, followed_id=target.id)
             dao.add(following_row)
             dao.commit()
 
-            res = make_response({"msg": f"Вы успешно подписались на пользователя {target.name}#{target.id}!"})
+            res = make_response({"msg": f"Вы успешно подписались на пользователя {gtag}!"})
 
         return res
 
     @staticmethod
-    def get_followers(username, user_id):
+    def get_followers(gtag: str):
         with create_session() as dao:
-            user = dao.query(User).filter(User.name == username, User.id == user_id).first()
-
-            if not user:
-                abort(400, {"msg": "Пользователь не найден!"})
+            user = UserService.get_user(gtag)
 
             followers = dao.query(User).join(Follower, Follower.follower_id == User.id).filter(
                 Follower.followed_id == user.id).all()
@@ -179,7 +167,7 @@ class UserService:
         return res
 
     @staticmethod
-    def generate_tokens(payload):
+    def generate_tokens(payload: Any):
         # generate tokens:
         # refresh exists fot 30 days; access - for 30 minutes
         refresh_time = datetime.now(tz=timezone.utc) + timedelta(days=30)
@@ -190,3 +178,20 @@ class UserService:
                                   algorithm="HS256")
 
         return {"refresh_token": refresh_token, "access_token": access_token}
+
+    @staticmethod
+    def parse_gtag(gtag: str) -> tuple[str, int]:
+        # end of tag's name
+        eot = gtag.rfind("-")
+        username = gtag[:eot]
+        user_id = int(gtag[eot + 1:])
+        return username, user_id
+
+    @staticmethod
+    def get_user(gtag):
+        username, user_id = UserService.parse_gtag(gtag)
+        with create_session() as dao:
+            user = dao.query(User).filter(User.id == user_id, User.name == username).first()
+            if not user:
+                abort(400, {"msg": f"пользователь {gtag} не найден"})
+        return user

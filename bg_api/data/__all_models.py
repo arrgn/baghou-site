@@ -16,8 +16,8 @@ class Chat(Base):
     about: Mapped[str255]
     avatar: Mapped[Optional[bytes]]
 
-    messages: Mapped[List["ChatMessage"]] = relationship(back_populates="chat")
-    users: Mapped[List["UserChat"]] = relationship(back_populates="chat")
+    messages: Mapped[List["ChatMessage"]] = relationship(back_populates="chat", cascade="all, delete")
+    users: Mapped[List["UserChat"]] = relationship(back_populates="chat", cascade="all, delete")
 
 
 class ChatMessage(Base):
@@ -25,7 +25,7 @@ class ChatMessage(Base):
 
     chat_id: Mapped[int] = mapped_column(ForeignKey("chats.id"), primary_key=True)
     message_id: Mapped[int] = mapped_column(ForeignKey("messages.id"))
-    message_number: Mapped[int] = mapped_column(primary_key=True)
+    message_number: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     chat: Mapped["Chat"] = relationship(back_populates="messages")
     message: Mapped["Message"] = relationship(back_populates="chats")
@@ -42,10 +42,10 @@ class Message(Base):
     __tablename__ = "messages"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    message: Mapped[str255]
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    message: Mapped[text]
 
-    chats: Mapped[List["ChatMessage"]] = relationship(back_populates="message")
+    chats: Mapped[List["ChatMessage"]] = relationship(back_populates="message", cascade="all, delete")
     sender: Mapped["User"] = relationship(back_populates="messages")
 
 
@@ -62,9 +62,9 @@ class User(Base):
     useotp: Mapped[bool] = mapped_column(default=False)
     avatar: Mapped[Optional[bytes]]
 
-    messages: Mapped[List["Message"]] = relationship(back_populates="sender")
-    chats: Mapped[List["UserChat"]] = relationship(back_populates="user")
-    tokens: Mapped[List["Token"]] = relationship(back_populates="user")
+    messages: Mapped[List["Message"]] = relationship(back_populates="sender", cascade="all, delete")
+    chats: Mapped[List["UserChat"]] = relationship(back_populates="user", cascade="all, delete")
+    tokens: Mapped[List["Token"]] = relationship(back_populates="user", cascade="all, delete")
 
 
 class Token(Base):
@@ -76,15 +76,26 @@ class Token(Base):
     user: Mapped["User"] = relationship(back_populates="tokens")
 
 
+class ChatRole(Base):
+    __tablename__ = "chat_roles"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str255] = mapped_column(unique=True)
+
+    users: Mapped[List["UserChat"]] = relationship(back_populates="role", cascade="all, delete")
+
+
 class UserChat(Base):
     __tablename__ = "user_chat"
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     chat_id: Mapped[int] = mapped_column(ForeignKey("chats.id"), primary_key=True)
     time: Mapped[datetime] = mapped_column(default=datetime.now())
+    role_id: Mapped[int] = mapped_column(ForeignKey("chat_roles.id"), default=1)
 
     user: Mapped["User"] = relationship(back_populates="chats")
     chat: Mapped["Chat"] = relationship(back_populates="users")
+    role: Mapped["ChatRole"] = relationship(back_populates="users")
 
 
 class Character(Base):
@@ -93,7 +104,7 @@ class Character(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str255]
 
-    statistics: Mapped[List["CharacterStatistic"]] = relationship(back_populates="character")
+    statistics: Mapped[List["CharacterStatistic"]] = relationship(back_populates="character", cascade="all, delete")
 
 
 class CharacterStatistic(Base):

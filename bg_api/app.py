@@ -10,7 +10,9 @@ from bg_api import app
 from bg_api import config
 from bg_api.funcs.path_module import path_to_file, create_dir
 from bg_api.loggers import logger
-from bg_api.middlewares.auth_middleware import token_required
+from bg_api.middlewares.auth_middleware import AuthMiddleware
+from bg_api.middlewares.chat_middlware import ChatMiddleware
+from bg_api.services.chat_service import ChatService
 from bg_api.services.user_service import UserService
 
 
@@ -29,14 +31,14 @@ def refresh():
     return UserService.refresh_access_token()
 
 
-@app.get("/players/profile/<username>-<user_id>")
-def get_profile_data(username, user_id):
-    return UserService.get_profile_data(username, user_id)
+@app.get("/players/profile/<gtag>")
+def get_profile_data(gtag):
+    return UserService.get_profile_data(gtag)
 
 
-@app.get("/players/profile/<username>-<user_id>/followers")
-def get_followers(username, user_id):
-    return UserService.get_followers(username, user_id)
+@app.get("/players/profile/<gtag>/followers")
+def get_followers(gtag):
+    return UserService.get_followers(gtag)
 
 
 @app.get("/players/search")
@@ -45,9 +47,84 @@ def get_users_by_name():
 
 
 @app.post("/players/follow")
-@token_required
-def follow_user(user):
+@AuthMiddleware.token_required
+def follow_user(user, **kwargs):
     return UserService.follow(user)
+
+
+@app.post("/chats/create")
+@AuthMiddleware.token_required
+def create_chat(user, **kwargs):
+    return ChatService.create_chat(user)
+
+
+@app.post("/chats/delete")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_admin
+def delete_chat(chat, **kwargs):
+    return ChatService.delete_chat(chat)
+
+
+@app.post("/chats/<chat_tag>/add_user")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_admin
+def add_user_to_chat(chat, **kwargs):
+    return ChatService.add_user_to_chat(chat)
+
+
+@app.post("/chats/<chat_tag>/delete_user")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_admin
+def delete_user_from_chat(chat, **kwargs):
+    return ChatService.delete_user_from_chat(chat)
+
+
+@app.post("/chats/<chat_tag>/leave")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+def leave_from_chat(user, chat, **kwargs):
+    return ChatService.leave_chat(user, chat)
+
+
+@app.post("/chats/<chat_tag>/promote")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_admin
+def promote_user(chat, **kwargs):
+    return ChatService.change_role(chat)
+
+
+@app.post("/chats/<chat_tag>/send_message")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_access
+def send_message(user, chat, **kwargs):
+    return ChatService.send_message(user, chat)
+
+
+@app.post("/chats/<chat_tag>/delete_message")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_access
+def delete_message(user, chat, **kwargs):
+    return ChatService.delete_message(user, chat)
+
+
+@app.get("/chats")
+@AuthMiddleware.token_required
+def get_users_chats(user, **kwargs):
+    return ChatService.get_users_chats(user)
+
+
+@app.get("/chats/<chat_tag>")
+@AuthMiddleware.token_required
+@ChatMiddleware.get_chat
+@ChatMiddleware.check_access
+def get_messages(chat, **kwargs):
+    return ChatService.get_messages(chat)
 
 
 @app.errorhandler(HTTPException)

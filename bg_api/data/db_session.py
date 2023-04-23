@@ -18,7 +18,7 @@ class Base(DeclarativeBase):
     }
 
 
-__factory = None
+__factory: orm.sessionmaker = None
 
 
 def global_init():
@@ -36,6 +36,14 @@ def global_init():
     from bg_api.data import __all_models
 
     Base.metadata.create_all(engine)
+
+    with __factory() as dao:
+        if not dao.query(__all_models.ChatRole).first():
+            user = __all_models.ChatRole(name="USER")
+            admin = __all_models.ChatRole(name="ADMIN")
+            dao.add(user)
+            dao.add(admin)
+            dao.commit()
 
 
 def create_session() -> Session:
