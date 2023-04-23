@@ -12,6 +12,15 @@ from bg_api.data.db_session import create_session
 class AuthMiddleware:
     @staticmethod
     def token_required(f):
+        """
+        Check for access token in the Authorization header.
+        If token is valid - add a user object to kwargs.
+        Else - abort an error.
+
+        :param f: Function.
+        :return: f or http error.
+        """
+
         @wraps(f)
         def decorated(*args, **kwargs):
             # get token from request
