@@ -82,7 +82,7 @@ class ChatRole(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str255] = mapped_column(unique=True)
 
-    users: Mapped[List["UserChat"]] = relationship(back_populates="role", cascade="all, delete")
+    users: Mapped[List["UserChat"]] = relationship(back_populates="role", cascade="all, delete, save-update")
 
 
 class UserChat(Base):
