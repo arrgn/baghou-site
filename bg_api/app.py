@@ -52,6 +52,12 @@ def follow_user(user, **kwargs):
     return UserService.follow(user)
 
 
+@app.post("/players/unfollow")
+@AuthMiddleware.token_required
+def unfollow_user(user, **kwargs):
+    return UserService.unfollow(user)
+
+
 @app.post("/chats/create")
 @AuthMiddleware.token_required
 def create_chat(user, **kwargs):

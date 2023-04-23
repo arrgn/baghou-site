@@ -140,14 +140,30 @@ class UserService:
     @staticmethod
     def follow(user: User):
         gtag = request.json["gtag"]
-        with create_session() as dao:
-            target = UserService.get_user(gtag)
+        target = UserService.get_user(gtag)
 
+        with create_session() as dao:
             following_row = Follower(follower_id=user.id, followed_id=target.id)
             dao.add(following_row)
             dao.commit()
 
-            res = make_response({"msg": f"Вы успешно подписались на пользователя {gtag}!"})
+        res = make_response({"msg": f"Вы успешно подписались на пользователя {gtag}!"})
+
+        return res
+
+    @staticmethod
+    def unfollow(user: User):
+        gtag = request.json["gtag"]
+        target = UserService.get_user(gtag)
+
+        with create_session() as dao:
+            following_row = dao.query(Follower).filter(Follower.follower_id == user.id,
+                                                       Follower.followed_id == target.id).first()
+
+            dao.delete(following_row)
+            dao.commit()
+
+        res = make_response({"msg": f"Вы успешно отписались от пользователя {gtag}!"})
 
         return res
 
