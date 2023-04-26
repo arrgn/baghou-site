@@ -65,6 +65,8 @@ class UserService:
 
         # get data access object
         with create_session() as dao:
+            dao.expire_on_commit = False
+
             # check user exists
             user = dao.query(User).filter(User.email == email).first()
             if not user:
