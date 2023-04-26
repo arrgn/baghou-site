@@ -3,20 +3,20 @@
 {% block content %}
     <div class="auth-form-container">
         <form action="" method="post" novalidate class="auth-form">
-            {{ form.hidden_tag() }}
             <p>
-                {{ form.password.label }}<br>
-                {{ form.password(class="form-control", type="password") }}<br>
-                {% for error in form.password.errors %}
+                {{ form.email.label }}<br>
+                {{ form.email(class="form-control") }}<br>
+                {% for error in form.email.errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error }}
                     </div>
                 {% endfor %}
             </p>
+            {{ form.hidden_tag() }}
             <p>
-                {{ form.email.label }}<br>
-                {{ form.email(class="form-control") }}<br>
-                {% for error in form.email.errors %}
+                {{ form.password.label }}<br>
+                {{ form.password(class="form-control", type="password") }}<br>
+                {% for error in form.password.errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error }}
                     </div>
