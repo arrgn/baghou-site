@@ -75,11 +75,11 @@ class UserService:
                 abort(400, {"msg": "Неверный логин или пароль!"})
 
             # generate tokens:
-            # refresh exists fot 30 days; access - for 30 minutes
+            # refresh exists for 30 days; access - for 30 minutes
             payload = {"id": user.id}
             tokens = UserService.generate_tokens(payload)
 
-            # save refresh token to database or update it if it already exists
+            # save refresh token to the database or update it if it already exists
             token = dao.query(Token).filter(Token.user_id == user.id).first()
             if token:
                 token.refresh_token = tokens["refresh_token"]
@@ -89,7 +89,12 @@ class UserService:
             dao.add(token)
             dao.commit()
 
-        res = make_response({"msg": "Вы успешно вошли в аккаунт!", "access_token": tokens["access_token"]})
+        res = make_response({"msg": "Вы успешно вошли в аккаунт!", "access_token": tokens["access_token"], "user": {
+            "gtag": f"{user.name}#{user.id}",
+            "bio": user.bio,
+            "rating": user.rating,
+            "avatar": user.avatar
+        }})
         # set cookie for 30 days
         res.set_cookie("refresh_token", tokens["refresh_token"], max_age=30 * 24 * 60 * 60, httponly=True)
 
@@ -216,7 +221,7 @@ class UserService:
         target = UserService.get_user(gtag)
 
         with create_session() as dao:
-            # get data about following that must be deleted
+            # get data about the following that must be deleted
             following_row = dao.query(Follower).filter(Follower.follower_id == user.id,
                                                        Follower.followed_id == target.id).first()
 
