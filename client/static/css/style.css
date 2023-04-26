@@ -1,0 +1,172 @@
+@font-face {
+    font-family: 'Comfortaa';
+    src: url("/static/fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf");
+}
+
+html {
+    height: 100%;
+    width: 100%;
+
+    background: rgb(20, 26, 50);
+    background: -moz-linear-gradient(315deg, rgba(20, 26, 50, 1) 0%, rgba(27, 74, 87, 1) 25%, rgba(31, 110, 58, 1) 75%, rgba(94, 105, 36, 1) 100%);
+    background: -webkit-linear-gradient(315deg, rgba(20, 26, 50, 1) 0%, rgba(27, 74, 87, 1) 25%, rgba(31, 110, 58, 1) 75%, rgba(94, 105, 36, 1) 100%);
+    background: linear-gradient(315deg, rgba(20, 26, 50, 1) 0%, rgba(27, 74, 87, 1) 25%, rgba(31, 110, 58, 1) 75%, rgba(94, 105, 36, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#141a32", endColorstr="#5e6924", GradientType=1);
+
+    font-family: 'Comfortaa', sans-serif;
+}
+
+body {
+    margin: 0;
+}
+
+header {
+    height: 4em;
+    display: flex;
+    justify-content: end;
+}
+
+header nav {
+    height: 100%;
+}
+
+header nav ul {
+    list-style-type: none;
+    padding: 15px;
+    overflow: hidden;
+    float: right;
+    background-color: transparent;
+    margin: 10px;
+}
+
+header nav li {
+    display: inline;
+}
+
+header li a {
+    color: #efe;
+    font-family: "Comfortaa", sans-serif;
+    text-align: center;
+    font-weight: 1000;
+    font-size: 16px;
+    padding: 16px 20px;
+    text-decoration: none;
+
+    background-image: linear-gradient(
+            to right,
+            #000 50%,
+            #fff 50%
+    );
+
+    background-size: 200% 100%;
+    background-position: 100%;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header li a:hover {
+    transition: .5s;
+    background-position: 0;
+}
+
+.account-nav {
+    height: 100%;
+}
+
+.account-nav ul {
+    list-style-type: none;
+    margin: 10px;
+    padding: 15px;
+    overflow: hidden;
+    float: right;
+    background-color: transparent;
+}
+
+.account-nav li {
+    display: inline;
+}
+
+.auth-form-container {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+
+    border-radius: 25px;
+
+    box-shadow: 20px 20px 40px -6px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+
+    background-color: rgba(255, 255, 255, .1);
+
+
+}
+
+.auth-form-container p {
+  margin: 0;
+}
+
+.auth-form {
+    font-family: "Comfortaa", sans-serif;
+    text-align: center;
+    font-weight: 1000;
+    font-size: 16px;
+
+    padding: 2em;
+    height: 500px;
+    width: 350px;
+
+    color: #fff;
+}
+
+.auth-form label {
+    font-size: 20px;
+}
+
+.auth-form input {
+    background-color: rgba(255, 255, 255, .05);
+
+    font-family: "Comfortaa", sans-serif;
+    text-align: center;
+    font-weight: 1000;
+    font-size: 16px;
+
+    color: #fff;
+
+    box-sizing: border-box;
+
+    width: 100%;
+    padding: 1em;
+    margin: 8px 0 2em;
+    border: none;
+
+    box-shadow: 4px 4px 60px rgba(0,0,0,0.2);
+
+    border-radius: 8px;
+}
+
+.auth-form input:hover {
+    box-shadow: 4px 4px 60px 8px rgba(0,0,0,0.2);
+}
+
+.auth-form-nav {
+    position:absolute;
+    left: 2em;
+    right: 2em;
+    bottom: 2em;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+input[data-autocompleted] {
+    background-color: transparent !important;
+}
+
+main {
+    height: 100%;
+    width: 100%;
+}

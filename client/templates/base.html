@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type = "text/css" href="{{ url_for("static", filename='css/style.css') }}">
     <title>Title</title>
 </head>
 <body>
@@ -12,16 +13,31 @@
                 <a href="/"> Домой </a>
             </li>
             <li>
-                Профиль
+                <a href="/"> Профиль </a>
             </li>
             <li>
-                Общение
+                <a href="/"> Общение </a>
             </li>
             <li>
-                Рейтинг
+                <a href="/"> Рейтинг </a>
             </li>
         </ul>
     </nav>
+    <div class="account-nav">
+        {% if store.is_auth == false %}
+            <ul>
+                <li>
+                    <a href="/auth/login"> Войти </a>
+                </li>
+            </ul>
+        {% else %}
+            <ul>
+                <li>
+                    <a href="/auth/login"> {{ store.user.username }} </a>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
 </header>
 <main>
     {% block content %} {% endblock %}
