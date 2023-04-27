@@ -154,12 +154,12 @@ class UserService:
         # get user
         user = UserService.get_user(gtag)
 
-        res = make_response({
+        res = make_response({"user": {
             "gtag": f"{user.name}#{user.id}",
             "bio": user.bio,
             "rating": user.rating,
             "avatar": user.avatar
-        })
+        }})
 
         return res
 
