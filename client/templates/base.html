@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type = "text/css" href="{{ url_for("static", filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename='css/style.css') }}">
     <title>Title</title>
 </head>
 <body>
@@ -11,9 +11,6 @@
         <ul>
             <li>
                 <a href="/"> Домой </a>
-            </li>
-            <li>
-                <a href="/"> Профиль </a>
             </li>
             <li>
                 <a href="/"> Общение </a>
@@ -26,14 +23,17 @@
     <div class="account-nav">
         {% if store.is_auth == false %}
             <ul>
-                <li>
+                <li class="auth-nav-button">
                     <a href="/auth/login"> Войти </a>
                 </li>
             </ul>
         {% else %}
             <ul>
-                <li>
-                    <a href="/auth/login"> {{ store.user.username }} </a>
+                <li class="username-label">
+                    <a href={{ "/profile/" + store.user["name"] + '-' + store.user["id"] }}> {{ store.user["name"] }} </a>
+                </li>
+                <li class="auth-nav-button">
+                    <a href="/auth/logout"> Выйти </a>
                 </li>
             </ul>
         {% endif %}

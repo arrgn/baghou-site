@@ -12,13 +12,21 @@ def home():
 
 @app.get("/auth/reg")
 def reg_get():
+    if store.is_auth:
+        return redirect("/")
+
     form = RegForm()
+
     return render_template("reg.html", form=form, store=store)
 
 
 @app.post("/auth/reg")
 def reg_post():
+    if store.is_auth:
+        return redirect("/")
+
     form = RegForm()
+
     if form.validate_on_submit():
         res = store.registration(form.username.data, form.email.data, form.password.data)
         return res
@@ -40,7 +48,22 @@ def login_post():
     return render_template("login.html", form=form, store=store)
 
 
+@app.get("/auth/logout")
+def logout_get():
+    res = store.logout()
+    return res
+
+
+@app.get("/profile/<gtag>")
+def profile(gtag):
+    return render_template("profile.html", store=store)
+
+
+@app.before_request
+def check_auth():
+    store.check_auth()
+
+
 @app.errorhandler(Exception)
 def http_error_handler(e):
-    print(e)
-    return {}
+    return render_template("error.html", store=store, error=e)

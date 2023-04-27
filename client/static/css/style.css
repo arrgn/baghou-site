@@ -99,8 +99,6 @@ header li a:hover {
     backdrop-filter: blur(10px);
 
     background-color: rgba(255, 255, 255, .1);
-
-
 }
 
 .auth-form-container p {
@@ -147,7 +145,7 @@ header li a:hover {
 }
 
 .auth-form input:hover {
-    box-shadow: 4px 4px 60px 8px rgba(0,0,0,0.2);
+    box-shadow: 4px 4px 60px 8px rgba(0,0,0,0.25);
 }
 
 .auth-form a {
@@ -178,6 +176,21 @@ header li a:hover {
     bottom: 2em;
 }
 
+header .auth-nav-button {
+    border-radius: 8px;
+
+    box-shadow: 20px 20px 40px -6px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+
+    background-color: rgba(255, 255, 255, .1);
+
+    padding: .5em;
+}
+
+header .username-label a {
+
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
@@ -185,6 +198,7 @@ input:-webkit-autofill:focus {
 
 input[data-autocompleted] {
     background-color: transparent;
+}
 
 main {
     height: 100%;
