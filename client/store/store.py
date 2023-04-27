@@ -1,6 +1,7 @@
 from flask import make_response, redirect, request
 
 from client.services.auth_service import AuthService
+from client.services.user_service import UserService
 
 
 class Store:
@@ -19,7 +20,7 @@ class Store:
         response = make_response(redirect("/"))
         response.set_cookie("access_token", res["access_token"])
         user = res["user"]
-        u_name, u_id = self.parse_gtag(user["gtag"])
+        u_name, u_id = UserService.parse_gtag_api(user["gtag"])
         user["name"] = u_name
         user["id"] = u_id
         self.set_user(user)
@@ -45,11 +46,5 @@ class Store:
             self.set_auth(False)
 
     def get_user_by_gtag(self, gtag):
-        pass
-
-    def parse_gtag(self, gtag: str):
-        eot = gtag.rfind("#")
-        username = gtag[:eot]
-        user_id = gtag[eot + 1:]
-
-        return username, user_id
+        res = UserService.get_user_by_gtag(gtag)
+        return res

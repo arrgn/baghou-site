@@ -1,4 +1,4 @@
-from flask import render_template, make_response, redirect
+from flask import render_template, redirect
 
 from client import app, store
 from client.forms.login_form import LoginForm
@@ -56,7 +56,9 @@ def logout_get():
 
 @app.get("/profile/<gtag>")
 def profile(gtag):
-    return render_template("profile.html", store=store)
+    res = store.get_user_by_gtag(gtag)
+    print(res)
+    return render_template("profile.html", store=store, user=res)
 
 
 @app.before_request

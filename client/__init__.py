@@ -1,3 +1,5 @@
+from os import environ
+
 from flask import Flask
 from client.store.store import Store
 
