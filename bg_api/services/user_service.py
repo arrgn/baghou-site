@@ -29,13 +29,22 @@ class UserService:
 
         # check email
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            abort(400, {"msg": "Некорректный адрес электронной почты"})
+            abort(400, {"msg": "Некорректный адрес электронной почты!", "error": "GE#VE"})  # validation error
+
+        # validate password
+        if len(password) < 8:
+            abort(400, {"msg": "Пароль должен быть не менее 8 символов!", "error": "GE#VE"})
+
+        # validate username
+        if len(username) > 12 or not re.match(r"[a-zA-Zа-яА-Я0-9_-]", username):
+            abort(400, {"msg": "Имя не должно превышать 12 символов в длину!", "error": "GE#VE"})
 
         # get data access object
         with create_session() as dao:
             # check for user with the same email
             if dao.query(User).filter(User.email == email).first():
-                abort(400, {"msg": "Пользователь с такой почтой уже существует!"})
+                # incorrect user data
+                abort(400, {"msg": "Пользователь с такой почтой уже существует!", "error": "GE#IUD"})
 
             # create user
             user = User(
