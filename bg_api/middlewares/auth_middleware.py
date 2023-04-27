@@ -40,7 +40,7 @@ class AuthMiddleware:
                 user = dao.query(User).filter(User.id == data["id"]).first()
 
             if not user:
-                abort(400, {"msg": "Пользователь не найден!"})
+                abort(400, {"msg": "Пользователь не найден!", "error": "GE#UNF"})
 
             return f(user=user, *args, **kwargs)
 
