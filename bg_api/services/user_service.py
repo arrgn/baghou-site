@@ -79,11 +79,11 @@ class UserService:
             # check user exists
             user = dao.query(User).filter(User.email == email).first()
             if not user:
-                abort(400, {"msg": "Пользователь не найден!"})
+                abort(400, {"msg": "Пользователь не найден!", "error": "GE#UNF"})
 
             # check password
             if not checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
-                abort(400, {"msg": "Неверный логин или пароль!"})
+                abort(400, {"msg": "Неверный логин или пароль!", "error": "GE#IUD"})
 
             # generate tokens:
             # refresh exists for 30 days; access - for 30 minutes
@@ -319,7 +319,7 @@ class UserService:
         with create_session() as dao:
             user = dao.query(User).filter(User.id == user_id, User.name == username).first()
             if not user:
-                abort(400, {"msg": f"пользователь {gtag} не найден"})
+                abort(400, {"msg": f"пользователь {gtag} не найден", "error": "GE#UNF"})
 
         # noinspection PyTypeChecker
         return user

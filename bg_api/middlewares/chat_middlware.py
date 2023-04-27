@@ -94,7 +94,7 @@ class ChatMiddleware:
                 chat = dao.query(Chat).filter(Chat.id == chat_id, Chat.name == chat_name).first()
                 # check for chat exists
                 if not chat:
-                    abort(400, {"msg": f"Чат {chat_name}#{chat_id} не был найден!"})
+                    abort(400, {"msg": f"Чат {chat_name}#{chat_id} не был найден!", "error": "GE#CNF"})
 
             return f(chat=chat, *args, **kwargs)
 
