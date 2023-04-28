@@ -29,13 +29,22 @@ class UserService:
 
         # check email
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            abort(400, {"msg": "Некорректный адрес электронной почты"})
+            abort(400, {"msg": "Некорректный адрес электронной почты!", "error": "GE#VE"})  # validation error
+
+        # validate password
+        if len(password) < 8:
+            abort(400, {"msg": "Пароль должен быть не менее 8 символов!", "error": "GE#VE"})
+
+        # validate username
+        if len(username) > 12 or not re.match(r"[a-zA-Zа-яА-Я0-9_-]", username):
+            abort(400, {"msg": "Имя не должно превышать 12 символов в длину!", "error": "GE#VE"})
 
         # get data access object
         with create_session() as dao:
             # check for user with the same email
             if dao.query(User).filter(User.email == email).first():
-                abort(400, {"msg": "Пользователь с такой почтой уже существует!"})
+                # incorrect user data
+                abort(400, {"msg": "Пользователь с такой почтой уже существует!", "error": "GE#IUD"})
 
             # create user
             user = User(
@@ -65,21 +74,23 @@ class UserService:
 
         # get data access object
         with create_session() as dao:
+            dao.expire_on_commit = False
+
             # check user exists
             user = dao.query(User).filter(User.email == email).first()
             if not user:
-                abort(400, {"msg": "Пользователь не найден!"})
+                abort(400, {"msg": "Пользователь не найден!", "error": "GE#UNF"})
 
             # check password
             if not checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
-                abort(400, {"msg": "Неверный логин или пароль!"})
+                abort(400, {"msg": "Неверный логин или пароль!", "error": "GE#IUD"})
 
             # generate tokens:
-            # refresh exists fot 30 days; access - for 30 minutes
+            # refresh exists for 30 days; access - for 30 minutes
             payload = {"id": user.id}
             tokens = UserService.generate_tokens(payload)
 
-            # save refresh token to database or update it if it already exists
+            # save refresh token to the database or update it if it already exists
             token = dao.query(Token).filter(Token.user_id == user.id).first()
             if token:
                 token.refresh_token = tokens["refresh_token"]
@@ -89,7 +100,12 @@ class UserService:
             dao.add(token)
             dao.commit()
 
-        res = make_response({"msg": "Вы успешно вошли в аккаунт!", "access_token": tokens["access_token"]})
+        res = make_response({"msg": "Вы успешно вошли в аккаунт!", "access_token": tokens["access_token"], "user": {
+            "gtag": f"{user.name}#{user.id}",
+            "bio": user.bio,
+            "rating": user.rating,
+            "avatar": user.avatar
+        }})
         # set cookie for 30 days
         res.set_cookie("refresh_token", tokens["refresh_token"], max_age=30 * 24 * 60 * 60, httponly=True)
 
@@ -147,12 +163,12 @@ class UserService:
         # get user
         user = UserService.get_user(gtag)
 
-        res = make_response({
+        res = make_response({"user": {
             "gtag": f"{user.name}#{user.id}",
             "bio": user.bio,
             "rating": user.rating,
             "avatar": user.avatar
-        })
+        }})
 
         return res
 
@@ -216,7 +232,7 @@ class UserService:
         target = UserService.get_user(gtag)
 
         with create_session() as dao:
-            # get data about following that must be deleted
+            # get data about the following that must be deleted
             following_row = dao.query(Follower).filter(Follower.follower_id == user.id,
                                                        Follower.followed_id == target.id).first()
 
@@ -303,7 +319,7 @@ class UserService:
         with create_session() as dao:
             user = dao.query(User).filter(User.id == user_id, User.name == username).first()
             if not user:
-                abort(400, {"msg": f"пользователь {gtag} не найден"})
+                abort(400, {"msg": f"пользователь {gtag} не найден", "error": "GE#UNF"})
 
         # noinspection PyTypeChecker
         return user

@@ -72,7 +72,7 @@ class ChatService:
             # get adding user
             add_user = dao.query(User).filter(User.id == user_id, User.name == username).first()
             if not add_user:
-                abort(400, {"msg": f"Пользователь {gtag} не был найден!"})
+                abort(400, {"msg": f"Пользователь {gtag} не был найден!", "error": "GE#UNF"})
 
             # add user to chat
             user_chat = UserChat(chat_id=chat.id, user_id=add_user.id)
@@ -101,7 +101,7 @@ class ChatService:
             # get deleting user
             del_user = dao.query(User).filter(User.id == user_id, User.name == username).first()
             if not del_user:
-                abort(400, {"msg": f"Пользователь {gtag} не был найден!"})
+                abort(400, {"msg": f"Пользователь {gtag} не был найден!", "error": "GE#UNF"})
 
             # delete user
             user_chat = dao.query(UserChat).filter(UserChat.user_id == del_user.id, UserChat.chat_id == chat.id).first()
@@ -127,7 +127,8 @@ class ChatService:
             # get data about the user in the chat
             user_chat = dao.query(UserChat).filter(UserChat.chat_id == chat.id, UserChat.user_id == user.id).first()
             if not user_chat:
-                abort(400, {"msg": f"Пользователь {user.name}#{user.id} не был найден в чате {chat.name}#{chat.id}!"})
+                abort(400, {"msg": f"Пользователь {user.name}#{user.id} не был найден в чате {chat.name}#{chat.id}!",
+                            "error": "GE#UNFIC"})
 
             # delete the user from the chat
             dao.delete(user_chat)
@@ -155,18 +156,19 @@ class ChatService:
             # get user to change
             change_user = UserService.get_user(gtag)
             if not change_user:
-                abort(400, {"msg": f"Пользователь {change_user.name}#{change_user.id} не был найден!"})
+                abort(400,
+                      {"msg": f"Пользователь {change_user.name}#{change_user.id} не был найден!", "error": "GE#UNF"})
 
             # get data about the user in the chat
             user_chat = dao.query(UserChat).filter(UserChat.chat_id == chat.id,
                                                    UserChat.user_id == change_user.id).first()
             if not user_chat:
-                abort(400, {"msg": f"Пользователь {gtag} не найден в чате {chat.name}#{chat.id}!"})
+                abort(400, {"msg": f"Пользователь {gtag} не найден в чате {chat.name}#{chat.id}!", "error": "GE#UNFIC"})
 
             # get user's role
             new_role = dao.query(ChatRole).filter(ChatRole.name == role).first()
             if not new_role:
-                abort(400, {"msg": f"Роль {role} не была найдена!"})
+                abort(400, {"msg": f"Роль {role} не была найдена!", "error": "GE#RNF"})
 
             # update user's role
             user_chat.role_id = new_role.id
@@ -226,7 +228,7 @@ class ChatService:
                 .first()
             if not message:
                 abort(400, {"msg": f"Сообщение с номером {message_number} от пользователя {user.name}#{user.id} "
-                                   f"в чате {chat.name}#{chat.id} не найдено!"})
+                                   f"в чате {chat.name}#{chat.id} не найдено!", "error": "GE#MNF"})
 
             dao.delete(message)
             dao.commit()

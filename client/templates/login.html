@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="auth-form-container">
+        <form action="" method="post" novalidate class="auth-form">
+            <p>
+                {{ form.email.label }}<br>
+                {{ form.email() }}<br>
+            <div class="alert">
+                {% for error in form.email.errors %}
+                    {{ error }} <br>
+                {% endfor %}
+            </div>
+            </p>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(type="password") }}<br>
+            <div class="alert">
+                {% for error in form.password.errors %}
+                    {{ error }} <br>
+                {% endfor %}
+            </div>
+            </p>
+            <div class="auth-form-nav">
+                <p> {{ form.submit(type="submit") }} </p>
+                <p>
+                    Нет аккаунта? <a href="/auth/reg"> зарегистрироваться </a>
+                </p>
+            </div>
+        </form>
+    </div>
+{% endblock %}

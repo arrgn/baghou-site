@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="profile-container">
+        <div id="profile-about" class="profile-edit-block">
+            <p id="avatar">
+                <img src="/static/img/glacie_default.png">
+            </p>
+            <p id="name">
+                {{ user["gtag"]}}
+            </p>
+            <p id="description">
+                {{ user["bio"] }}
+            </p>
+            {% if owner %}
+                <div class="change-profile">
+                    <a href="/profile/edit">  Редактировать профиль </a>
+                </div>
+            {% endif %}
+        </div>
+        <div id="profile-rating" class="profile-block">
+            <p id="rating">
+                Рейтинг: {{ user["rating"] }}
+            </p>
+        </div>
+        <div id="profile-stats" class="profile-block">
+
+        </div>
+    </div>
+{% endblock %}
