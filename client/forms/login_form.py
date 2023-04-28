@@ -50,4 +50,4 @@ class LoginForm(FlaskForm):
                                  Length(min=8,
                                         message='Пароль должен быть не короче 8 символов')])
 
-    submit = SubmitField('Зарегистрироваться')
+    submit = SubmitField('Войти')
