@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="profile-edit-container">
+        <div id="profile-about-edit" class="profile-block">
+            <p id="avatar">
+                <button class="avatar">
+                    <img src="/static/img/glacie_default.png">
+                </button>
+            </p>
+                <div>
+                    <form>
+                        <input type="text" placeholder="Имя...">
+                        <button type="submit"> Сохранить </button>
+                    </form>
+                </div>
+            </p>
+            <form>
+                <input type="text" placeholder="Описание...">
+                <button type="submit"> Сохранить </button>
+            </form>
+            </p>
+        </div>
+        <div id="profile-data-edit" class="profile-block">
+
+        </div>
+    </div>
+{% endblock %}

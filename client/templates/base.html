@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename='css/style.css') }}">
+    <title>Touhou Duels</title>
+</head>
+<body>
+<header class="disable-select">
+    <nav>
+        <ul>
+            <li>
+                <a href="/"> Домой </a>
+            </li>
+            <li>
+                <a href="/social"> Общение </a>
+            </li>
+            <li>
+                <a href="/"> Рейтинг </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="account-nav">
+        {% if store.is_auth == false %}
+            <ul class="login-button">
+                <li class="auth-nav-button">
+                    <a href="/auth/login"> Войти </a>
+                </li>
+            </ul>
+        {% else %}
+            <ul>
+                <li class="user-avatar">
+                    <img src="/static/img/glacie_default.png">
+                </li>
+                <li class="username-label">
+                    <a href={{ "/profile/" + store.user["name"] + '-' + store.user["id"] }}> {{ store.user["name"] }} </a>
+                </li>
+                <li class="auth-nav-button">
+                    <a href="/auth/logout"> Выйти </a>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
+</header>
+<main>
+    {% block content %} {% endblock %}
+</main>
+</body>
+</html>
