@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir -r ./requirements.txt
 ENV FLASK_APP app.py
 ENV FLASK_DEBUG 0
 ENTRYPOINT ["flask"]
-CMD ["run", "--host", "0.0.0.0"]
+CMD ["run", "--host", "0.0.0.0", "--port", "3000"]

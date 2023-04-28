@@ -112,6 +112,26 @@ class UserService:
         return res
 
     @staticmethod
+    def logout(user: User) -> Response:
+        """
+        Logout user
+
+        :return: None
+        """
+
+        with create_session() as dao:
+            # get token to remove
+            token = dao.query(Token).filter(Token.user_id == user.id).first()
+
+            dao.delete(token)
+            dao.commit()
+
+        res = make_response({"msg": "Вы успешно вышли из системы!"})
+        res.set_cookie("refresh_token", "", expires=0)  # remove refresh token from a client
+
+        return res
+
+    @staticmethod
     def refresh_access_token() -> Response:
         """
         Generate new access token and return to the client.
