@@ -13,6 +13,16 @@ def my_length_check(form, field):
         raise ValidationError('Пароль должен быть не короче 8 символов')
 
 
+def MyValidator(message):
+    def _my_datarequired(form, field):
+        data = field.data
+        f1 = len(field.data) == 0
+        if f1:
+            raise ValidationError(message)
+
+    return _my_datarequired
+
+
 def email_check(form, field):
     pass
 
@@ -40,13 +50,13 @@ class LoginForm(FlaskForm):
     email = StringField('Адрес электронной почты',
                         validators=
                         [
-                            DataRequired(),
+                            MyValidator("Введите почту"),
                             Email(message="Неправильная почта"),
                         ])
 
     password = PasswordField('Пароль',
                              validators=[
-                                 DataRequired(),
+                                 MyValidator("Введите пароль"),
                                  Length(min=8,
                                         message='Пароль должен быть не короче 8 символов')])
 

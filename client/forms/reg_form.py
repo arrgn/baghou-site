@@ -16,6 +16,14 @@ def my_length_check(form, field):
 def email_check(form, field):
     pass
 
+def MyValidator(message):
+    def _my_datarequired(form, field):
+        data = field.data
+        f1 = len(field.data) == 0
+        if f1:
+            raise ValidationError(message)
+
+    return _my_datarequired
 
 def user_check_check(form, field):
     data = field.data
@@ -39,20 +47,20 @@ def user_check_check(form, field):
 class RegForm(FlaskForm):
     username = StringField('Имя пользователя',
                            validators=[
-                               DataRequired(),
+                               MyValidator("Введите имя"),
                                user_check_check
                            ])
 
     email = StringField('Адрес электронной почты',
                         validators=
                         [
-                            DataRequired(),
+                            MyValidator("Введите почту"),
                             Email(message="Неправильная почта"),
                         ])
 
     password = PasswordField('Пароль',
                              validators=[
-                                 DataRequired(),
+                                 MyValidator("Введите пароль"),
                                  Length(min=8,
                                         message='Пароль должен быть не короче 8 символов')])
 

@@ -4,6 +4,9 @@
 }
 
 html {
+    color: #fff;
+    font-size: 30px;
+
     --bg-gradient-angle: 330.64deg;
 
     height: 100%;
