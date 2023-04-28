@@ -4,21 +4,21 @@
     <div class="profile-edit-container">
         <div id="profile-about-edit" class="profile-block">
             <p id="avatar">
-                <img src="/static/img/glacie_default.png">
-            <div class="profile-edit-btn">
-                <a> Изменить аватар</a></div>
+                <button class="avatar">
+                    <img src="/static/img/glacie_default.png">
+                </button>
             </p>
-            <p id="name">
-                {{ user["gtag"] }}
-            <div>
-                <a> Изменить имя </a>
-            </div>
+                <div>
+                    <form>
+                        <input type="text" placeholder="Имя...">
+                        <button type="submit"> Сохранить </button>
+                    </form>
+                </div>
             </p>
-            <p id="description">
-                {{ user["bio"] }}
-            <div>
-                <a> изменить описание </a>
-            </div>
+            <form>
+                <input type="text" placeholder="Описание...">
+                <button type="submit"> Сохранить </button>
+            </form>
             </p>
         </div>
         <div id="profile-data-edit" class="profile-block">

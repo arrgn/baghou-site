@@ -260,8 +260,8 @@ header .auth-nav-button {
 #profile-about img {
     border-radius: 50%;
 
-    height: 400px;
-    width: 400px;
+    height: 70%;
+    width: 70%;
 }
 
 #profile-about #name {
@@ -423,7 +423,12 @@ header .auth-nav-button {
     background-color: rgba(255, 255, 255, .1);
 }
 
-.profile-edit-container a {
+#profile-about-edit #avatar button {
+    background-color: rgba(255, 255, 255, 0);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.profile-edit-container button {
     background-color: rgba(255, 255, 255, .05);
 
     text-decoration: none;
@@ -440,12 +445,55 @@ header .auth-nav-button {
     border-radius: 8px;
 }
 
+.profile-edit-container button:hover {
+    box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.25);
+}
+
+.profile-edit-container input {
+    background-color: rgba(255, 255, 255, .05);
+
+    font-family: "Comfortaa", sans-serif;
+    text-align: center;
+    font-weight: 1000;
+    font-size: 24px;
+
+    color: #fff;
+
+    box-sizing: border-box;
+
+    width: 70%;
+    padding: .5em;
+    margin: 8px 0 1em;
+    border: none;
+
+    box-shadow: 4px 4px 60px rgba(0, 0, 0, 0.2);
+
+    border-radius: 8px;
+
+}
+
+.profile-edit-container input:hover {
+    box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.25);
+}
+
 #profile-about-edit {
     grid-row-start: 1;
     grid-column-start: 1;
 
     grid-row-end: 3;
     grid-column-end: 2;
+}
+
+#profile-about-edit img {
+    box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.15);
+    border-radius: 50%;
+
+    width: 70%;
+    height: 70%;
+}
+
+#profile-about-edit img:hover {
+    box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.25);
 }
 
 #profile-data-edit {
