@@ -26,6 +26,12 @@ def login():
     return UserService.login()
 
 
+@app.get("/auth/logout")
+@AuthMiddleware.token_required
+def logout(user):
+    return UserService.logout(user)
+
+
 @app.get("/auth/refresh")
 def refresh():
     return UserService.refresh_access_token()
