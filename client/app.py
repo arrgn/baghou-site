@@ -5,9 +5,6 @@ from client.forms.login_form import LoginForm
 from client.forms.reg_form import RegForm
 
 
-from client.http.api import Api
-
-
 @app.get("/")
 def home():
     return render_template("home.html", store=store)
@@ -71,6 +68,7 @@ def profile_edit():
     if "access_token" not in request.cookies:
         return redirect('/')
     return render_template("profile-edit.html", store=store, user=store.user)
+
 
 @app.get("/social")
 def social():

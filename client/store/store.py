@@ -1,3 +1,5 @@
+from os import environ
+
 from flask import make_response, redirect, request
 
 from client.services.auth_service import AuthService
