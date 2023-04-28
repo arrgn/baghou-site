@@ -13,6 +13,10 @@ x-api-variables: &api-variables
   DB_PORT: 5432
   DATABASE: ${POSTGRES_DB}
 
+x-client-variables: &client-variables
+  API_URL: api:5000
+  URL: localhost:5000
+  FLASK_DEBUG: 1
 
 services:
   postgresql_db:
@@ -50,10 +54,14 @@ services:
   client:
     stdin_open: true
     build:
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
       context: "./client"
     depends_on:
       - api
+    environment:
+      <<: *client-variables
+    ports:
+      - "3000:3000"
 
   adminer:
     image: adminer
