@@ -50,7 +50,7 @@ services:
   client:
     stdin_open: true
     build:
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
       context: "./client"
     depends_on:
       - api
