@@ -13,3 +13,8 @@ class AuthService:
     @staticmethod
     def logout():
         return Api.post("/auth/logout")
+
+    @staticmethod
+    def refresh():
+        res = Api.get("/auth/refresh")
+        return res

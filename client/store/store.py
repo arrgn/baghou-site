@@ -6,7 +6,7 @@ from client.services.user_service import UserService
 
 class Store:
     def __init__(self):
-        self.user = {}
+        self.user = {"gtag": None}
         self.is_auth = False
 
     def set_auth(self, value: bool):
@@ -18,13 +18,13 @@ class Store:
     def login(self, email: str, password: str):
         res = AuthService.login(email, password)
         response = make_response(redirect("/"))
-        response.set_cookie("access_token", res["access_token"])
+        response.set_cookie("access_token", res["access_token"], max_age=30 * 60 * 60 * 24)
         user = res["user"]
         u_name, u_id = UserService.parse_gtag_api(user["gtag"])
         user["name"] = u_name
         user["id"] = u_id
+        print(user)
         self.set_user(user)
-        print(self.user)
         return response
 
     def registration(self, username: str, email: str, password: str):
@@ -33,8 +33,7 @@ class Store:
         return response
 
     def logout(self):
-        self.set_user({})
-        # res = AuthService.logout()
+        self.set_user({"gtag": "none#0"})
         response = make_response(redirect("/"))
         response.set_cookie("access_token", "", expires=0)
         return response

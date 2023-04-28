@@ -1,8 +1,11 @@
-from flask import render_template, redirect
+from flask import render_template, redirect, abort, request
 
 from client import app, store
 from client.forms.login_form import LoginForm
 from client.forms.reg_form import RegForm
+
+
+from client.http.api import Api
 
 
 @app.get("/")
@@ -57,8 +60,22 @@ def logout_get():
 @app.get("/profile/<gtag>")
 def profile(gtag):
     res = store.get_user_by_gtag(gtag)
-    print(res)
-    return render_template("profile.html", store=store, user=res)
+    if "user" not in res:
+        return abort(404)
+    user = res["user"]
+    return render_template("profile.html", store=store, user=user, owner=(user["gtag"] == store.user["gtag"]))
+
+
+@app.get("/profile/edit")
+def profile_edit():
+    if "access_token" not in request.cookies:
+        return redirect('/')
+    return render_template("profile-edit.html", store=store, user=store.user)
+
+@app.get("/social")
+def social():
+    res = ''
+    return render_template("social.html", store=store)
 
 
 @app.before_request

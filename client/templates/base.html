@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename='css/style.css') }}">
-    <title>Title</title>
+    <title>Touhou Duels</title>
 </head>
 <body>
-<header>
+<header class="disable-select">
     <nav>
         <ul>
             <li>
                 <a href="/"> Домой </a>
             </li>
             <li>
-                <a href="/"> Общение </a>
+                <a href="/social"> Общение </a>
             </li>
             <li>
                 <a href="/"> Рейтинг </a>
@@ -22,13 +22,16 @@
     </nav>
     <div class="account-nav">
         {% if store.is_auth == false %}
-            <ul>
+            <ul class="login-button">
                 <li class="auth-nav-button">
                     <a href="/auth/login"> Войти </a>
                 </li>
             </ul>
         {% else %}
             <ul>
+                <li class="user-avatar">
+                    <img src="/static/img/glacie_default.png">
+                </li>
                 <li class="username-label">
                     <a href={{ "/profile/" + store.user["name"] + '-' + store.user["id"] }}> {{ store.user["name"] }} </a>
                 </li>

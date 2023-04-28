@@ -6,6 +6,7 @@ class UserService:
     def get_user_by_gtag(gtag: str):
         name, id = UserService.parse_gtag_client(gtag)
         res = Api.get(f"/players/profile/{name}-{id}")
+
         return res
 
     @staticmethod
